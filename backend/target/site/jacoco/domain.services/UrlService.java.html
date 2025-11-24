@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UrlService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">my-app</a> &gt; <a href="index.source.html" class="el_package">domain.services</a> &gt; <span class="el_source">UrlService.java</span></div><h1>UrlService.java</h1><pre class="source lang-java linenums">package domain.services;
+
+import domain.models.Url;
+import domain.repositories.UrlRepository;
+import org.springframework.stereotype.Service;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Service
+public class UrlService {
+
+    private final UrlRepository urlRepository;
+
+<span class="fc" id="L19">    public UrlService(UrlRepository urlRepository) {</span>
+<span class="fc" id="L20">        this.urlRepository = urlRepository;</span>
+<span class="fc" id="L21">    }</span>
+
+    // 1) Crear URL corta para usuario autenticado
+    public Url createShortUrl(String originalUrl, String userId) {
+<span class="fc" id="L25">        validateUrl(originalUrl);</span>
+
+<span class="fc" id="L27">        String shortCode = generateUniqueShortCode(originalUrl);</span>
+<span class="fc" id="L28">        Instant now = Instant.now();</span>
+<span class="fc" id="L29">        String id = UUID.randomUUID().toString();</span>
+
+<span class="fc" id="L31">        Url url = new Url(id, originalUrl, shortCode, now, userId);</span>
+<span class="fc" id="L32">        return urlRepository.save(url);</span>
+    }
+
+    // 2) Obtener URL original por shortCode (para redirección)
+    public Optional&lt;Url&gt; getByShortCode(String shortCode) {
+<span class="fc" id="L37">        return urlRepository.findByShortCode(shortCode);</span>
+    }
+
+    // 3) Listar URLs de un usuario
+    public List&lt;Url&gt; listByUser(String userId) {
+<span class="fc" id="L42">        return urlRepository.findByUserId(userId);</span>
+    }
+
+    // 4) Eliminar URL (solo si pertenece al usuario)
+    public void delete(String id, String userId) {
+<span class="fc" id="L47">        urlRepository.deleteByIdAndUserId(id, userId);</span>
+<span class="fc" id="L48">    }</span>
+
+    // --- Reglas de dominio / helpers ---
+
+    private void validateUrl(String originalUrl) {
+        try {
+<span class="fc" id="L54">            new URL(originalUrl);</span>
+<span class="fc" id="L55">        } catch (MalformedURLException e) {</span>
+<span class="fc" id="L56">            throw new IllegalArgumentException(&quot;Invalid URL&quot;);</span>
+<span class="fc" id="L57">        }</span>
+<span class="fc" id="L58">    }</span>
+
+    private String generateUniqueShortCode(String originalUrl) {
+<span class="fc" id="L61">        String base = Integer.toHexString(originalUrl.hashCode());</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        if (base.length() &lt; 6) {</span>
+<span class="nc" id="L63">            base = (base + &quot;000000&quot;).substring(0, 6);</span>
+        }
+<span class="fc" id="L65">        return base.substring(0, 6);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

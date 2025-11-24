@@ -1,3 +1,4 @@
+C:\Users\Milton\.vscode\URLShorting1\backend\src\Application.java
 C:\Users\Milton\.vscode\URLShorting1\backend\src\domain\models\Url.java
 C:\Users\Milton\.vscode\URLShorting1\backend\src\domain\models\User.java
 C:\Users\Milton\.vscode\URLShorting1\backend\src\domain\repositories\UrlRepository.java
@@ -5,6 +6,7 @@ C:\Users\Milton\.vscode\URLShorting1\backend\src\domain\repositories\UserReposit
 C:\Users\Milton\.vscode\URLShorting1\backend\src\domain\services\AuthService.java
 C:\Users\Milton\.vscode\URLShorting1\backend\src\domain\services\UrlService.java
 C:\Users\Milton\.vscode\URLShorting1\backend\src\infrastructure\http\AuthController.java
+C:\Users\Milton\.vscode\URLShorting1\backend\src\infrastructure\http\dto\LoginDtos.java
 C:\Users\Milton\.vscode\URLShorting1\backend\src\infrastructure\http\dto\LoginRequestDto.java
 C:\Users\Milton\.vscode\URLShorting1\backend\src\infrastructure\http\dto\LoginResponseDto.java
 C:\Users\Milton\.vscode\URLShorting1\backend\src\infrastructure\http\dto\UrlRequestDto.java
@@ -20,4 +22,3 @@ C:\Users\Milton\.vscode\URLShorting1\backend\src\infrastructure\security\Auth\dt
 C:\Users\Milton\.vscode\URLShorting1\backend\src\infrastructure\security\JwtAuthenticationFilter.java
 C:\Users\Milton\.vscode\URLShorting1\backend\src\infrastructure\security\JwtService.java
 C:\Users\Milton\.vscode\URLShorting1\backend\src\infrastructure\security\SecurityConfig.java
-C:\Users\Milton\.vscode\URLShorting1\backend\src\Main.java

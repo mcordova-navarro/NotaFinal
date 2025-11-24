@@ -10,13 +10,3 @@ public class LoginDtos {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 }
-
-class LoginResponseDto {
-    private String token;
-
-    public LoginResponseDto(String token) {
-        this.token = token;
-    }
-
-    public String getToken() { return token; }
-}

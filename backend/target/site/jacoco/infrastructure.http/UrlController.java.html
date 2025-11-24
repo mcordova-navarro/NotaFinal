@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UrlController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">my-app</a> &gt; <a href="index.source.html" class="el_package">infrastructure.http</a> &gt; <span class="el_source">UrlController.java</span></div><h1>UrlController.java</h1><pre class="source lang-java linenums">package infrastructure.http;
+
+import domain.models.Url;
+import domain.services.UrlService;
+import infrastructure.http.dto.UrlRequestDto;
+import infrastructure.http.dto.UrlResponseDto;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping(&quot;/api/urls&quot;)
+public class UrlController {
+
+    private final UrlService urlService;
+
+<span class="nc" id="L22">    public UrlController(UrlService urlService) {</span>
+<span class="nc" id="L23">        this.urlService = urlService;</span>
+<span class="nc" id="L24">    }</span>
+
+    // POST /api/urls  -&gt; crear URL corta
+    @PostMapping
+    public ResponseEntity&lt;UrlResponseDto&gt; create(@RequestBody UrlRequestDto request, Principal principal) {
+<span class="nc" id="L29">        String userId = principal.getName(); // viene del JWT</span>
+<span class="nc" id="L30">        Url url = urlService.createShortUrl(request.getOriginalUrl(), userId);</span>
+<span class="nc" id="L31">        return ResponseEntity.ok(toDto(url));</span>
+    }
+
+    // GET /api/urls -&gt; listar links del usuario autenticado
+    @GetMapping
+    public ResponseEntity&lt;List&lt;UrlResponseDto&gt;&gt; list(Principal principal) {
+<span class="nc" id="L37">        String userId = principal.getName();</span>
+<span class="nc" id="L38">        List&lt;UrlResponseDto&gt; urls = urlService.listByUser(userId)</span>
+<span class="nc" id="L39">                .stream()</span>
+<span class="nc" id="L40">                .map(this::toDto)</span>
+<span class="nc" id="L41">                .collect(Collectors.toList());</span>
+<span class="nc" id="L42">        return ResponseEntity.ok(urls);</span>
+    }
+
+    // DELETE /api/urls/{id} -&gt; eliminar link
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; delete(@PathVariable String id, Principal principal) {
+<span class="nc" id="L48">        String userId = principal.getName();</span>
+<span class="nc" id="L49">        urlService.delete(id, userId);</span>
+<span class="nc" id="L50">        return ResponseEntity.noContent().build();</span>
+    }
+
+    private UrlResponseDto toDto(Url url) {
+<span class="nc" id="L54">        return new UrlResponseDto(</span>
+<span class="nc" id="L55">                url.getId(),</span>
+<span class="nc" id="L56">                url.getOriginalUrl(),</span>
+<span class="nc" id="L57">                url.getShortCode(),</span>
+<span class="nc" id="L58">                url.getCreatedAt()</span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

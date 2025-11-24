@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InMemoryUrlRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">my-app</a> &gt; <a href="index.source.html" class="el_package">infrastructure.repositories</a> &gt; <span class="el_source">InMemoryUrlRepository.java</span></div><h1>InMemoryUrlRepository.java</h1><pre class="source lang-java linenums">package infrastructure.repositories;
+
+import domain.models.Url;
+import domain.repositories.UrlRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
+@Repository
+<span class="fc" id="L12">public class InMemoryUrlRepository implements UrlRepository {</span>
+
+<span class="fc" id="L14">    private final Map&lt;String, Url&gt; store = new ConcurrentHashMap&lt;&gt;();</span>
+
+    @Override
+    public Url save(Url url) {
+<span class="fc" id="L18">        store.put(url.getId(), url);</span>
+<span class="fc" id="L19">        return url;</span>
+    }
+
+    @Override
+    public Optional&lt;Url&gt; findByShortCode(String shortCode) {
+<span class="fc" id="L24">        return store.values()</span>
+<span class="fc" id="L25">                .stream()</span>
+<span class="fc" id="L26">                .filter(u -&gt; u.getShortCode().equals(shortCode))</span>
+<span class="fc" id="L27">                .findFirst();</span>
+    }
+
+    @Override
+    public List&lt;Url&gt; findByUserId(String userId) {
+<span class="fc" id="L32">        return store.values()</span>
+<span class="fc" id="L33">                .stream()</span>
+<span class="fc" id="L34">                .filter(u -&gt; u.getUserId().equals(userId))</span>
+<span class="fc" id="L35">                .collect(Collectors.toList());</span>
+    }
+
+    @Override
+    public void deleteByIdAndUserId(String id, String userId) {
+<span class="fc" id="L40">        Url existing = store.get(id);</span>
+<span class="pc bpc" id="L41" title="1 of 4 branches missed.">        if (existing != null &amp;&amp; existing.getUserId().equals(userId)) {</span>
+<span class="fc" id="L42">            store.remove(id);</span>
+        } else {
+<span class="fc" id="L44">            throw new IllegalArgumentException(&quot;URL not found or not owned by user&quot;);</span>
+        }
+<span class="fc" id="L46">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
